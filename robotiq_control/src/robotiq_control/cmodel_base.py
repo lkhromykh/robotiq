@@ -3,7 +3,7 @@ from math import ceil
 import time
 import threading
 from robotiq_msgs.msg import CModelStatus
-from pymodbus.client.sync import ModbusTcpClient, ModbusSerialClient
+from pymodbus.client import ModbusTcpClient, ModbusSerialClient
 from pymodbus.register_read_message import ReadInputRegistersResponse
 
 
@@ -33,7 +33,7 @@ class ComModbusTcp:
     # Initiate message as an empty list
     message = []
     # Fill message by combining two bytes in one register
-    for i in range(0, len(data)/2):
+    for i in range(0, len(data)//2):
       message.append((data[2*i] << 8) + data[2*i+1])
     # TODO: Implement try/except
     with self.lock:
@@ -68,7 +68,7 @@ class ComModbusRtu:
       """Connection to the client - the method takes the IP address (as a string, e.g. '192.168.1.11') as an argument."""
       self.client = ModbusSerialClient(method='rtu',port=device,stopbits=1, bytesize=8, baudrate=115200, timeout=0.2)
       if not self.client.connect():
-          print "Unable to connect to %s" % device
+          print("Unable to connect to %s" % device)
           return False
       return True
 
@@ -86,7 +86,7 @@ class ComModbusRtu:
       message = []
 
       #Fill message by combining two bytes in one register
-      for i in range(0, len(data)/2):
+      for i in range(0, len(data)//2):
          message.append((data[2*i] << 8) + data[2*i+1])
 
       try:

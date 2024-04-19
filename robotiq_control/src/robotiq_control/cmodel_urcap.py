@@ -59,6 +59,7 @@ class RobotiqCModelURCap:
         self._max_speed = 255
         self._min_force = 0
         self._max_force = 255
+        self._seq_id = 0
 
         self.connect(address)
 
@@ -83,6 +84,7 @@ class RobotiqCModelURCap:
 
     def getStatus(self):
         message = CModelStatus()
+        message.header = std_msgs.msg.Header(seq=self._seq_id, stamp=rospy.Time.now(), frame_id='')
         #Assign the values to their respective variables
         message.gACT = self._get_var(self.ACT)
         message.gGTO = self._get_var(self.GTO)
@@ -92,6 +94,7 @@ class RobotiqCModelURCap:
         message.gPR  = self._get_var(self.PRE)
         message.gPO  = self._get_var(self.POS)
         # message.gCU  = self._get_var()  # current is not read by this package
+        self._seq_id += 1
         return message
 
     def _set_vars(self, var_dict):
